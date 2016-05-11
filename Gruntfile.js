@@ -1,7 +1,7 @@
 var matchdep = require('matchdep');
 
 module.exports = function (grunt) {
-
+  grunt.loadNpmTasks('grunt-webpack')
   grunt.initConfig({
     project: {
       src: 'src'
@@ -12,8 +12,22 @@ module.exports = function (grunt) {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: '<%= project.src %>/js/rulez.js',
+        src: 'dist/js/rulez.js',
         dest: 'dist/js/rulez.min.js'
+      }
+    },
+    webpack: {
+      main: {
+        // webpack options
+        entry: "./src/js/main.js",
+        output: {
+          path: "dist/js",
+          filename: "rulez.js",
+          // export itself to a global var
+          libraryTarget: "var",
+          // name of the global var: "Foo"
+          library: "Rulez"
+        }
       }
     },
     cssmin: {
@@ -68,5 +82,5 @@ module.exports = function (grunt) {
   matchdep.filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint','uglify', 'cssmin', 'jsdoc']);
+  grunt.registerTask('default', ['webpack', 'jshint','uglify', 'cssmin', 'jsdoc']);
 };
